@@ -1,0 +1,10 @@
+# swagger.yml
+
+openapi: 3.0.0
+info:
+  title: "Flask REST API"
+  description: "An API for Network manage"
+  version: "1.0.0"
+
+servers:
+  - url: "/api"
