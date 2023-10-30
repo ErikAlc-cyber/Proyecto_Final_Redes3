@@ -8,3 +8,26 @@ info:
 
 servers:
   - url: "/api"
+
+paths:
+  /scan:
+    get:
+      operationId: "network.scan_all"
+      tags:
+        - "network"
+        - "topology"
+      summary: "Scan the whole topology to graph it"
+      responses:
+        "200":
+          description: "Successfully Scan all network"
+  /connect:
+    get:
+      operationId: "network.connect"
+      tags:
+        - "network"
+      summary: "Connect to a device by SSH protocol"
+      responses:
+        "200":
+          description: "Successfully connected"
+        "404":
+          description: "Device not found"
