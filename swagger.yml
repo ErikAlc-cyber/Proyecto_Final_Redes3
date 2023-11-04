@@ -3,31 +3,59 @@
 openapi: 3.0.0
 info:
   title: "Flask REST API"
-  description: "An API for Network manage"
-  version: "1.0.0"
+  description: "Una API para manejar redes"
+  version: "0.1.0"
 
 servers:
-  - url: "/api"
+  - url: "/"
+
+components:
+  schemas:
+    Host:
+      type: "object"
+      required:
+        - hname
+      properties:
+        hname:
+          type: "string"
+        ip:
+          type: "string"
 
 paths:
-  /scan:
+  /topologia:
+    
     get:
-      operationId: "network.scan_all"
+      operationId: "topology_scan.scan_all"
       tags:
-        - "network"
         - "topology"
-      summary: "Scan the whole topology to graph it"
+      summary: "Regresar json con los routers existentes en la topología y ligas a sus routers vecinos"
       responses:
         "200":
-          description: "Successfully Scan all network"
-  /connect:
-    get:
-      operationId: "network.connect"
+          description: "Se escaneo toda la topologia"
+ 
+    post:
+      operationId: "topology_scan.scan_all"
       tags:
-        - "network"
-      summary: "Connect to a device by SSH protocol"
+        - "topology"
+      summary: "Activa un demonio que cada 5 minutos explora la red para detectar cambios en la misma"
       responses:
         "200":
-          description: "Successfully connected"
-        "404":
-          description: "Device not found"
+          description: "Se activo un daemon para explorar la red"
+ 
+    put:
+      operationId: "topology_scan.scan_all"
+      tags:
+        - "topology"
+      summary: "Permite cambiar el intervalo de tiempo en el que el demonio explora la topología"
+      responses:
+        "200":
+          description: "Se cambio el intervalo de tiempo"
+ 
+    delete:
+      operationId: "topology_scan.scan_all"
+      tags:
+        - "topology"
+      summary: "Detiene el demonio que explora la topologia"
+      responses:
+        "200":
+          description: "Se detuvo el daemon"
