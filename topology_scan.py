@@ -7,6 +7,7 @@ import socket
 import fcntl
 import struct
 import ipaddress
+import scapy.all as scapy 
 
 
 #TODO
@@ -38,67 +39,48 @@ def get_ip():
     
     ip = [
         i['addr']
-        for i in ifaddresses("wlan0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     
     dirty_ip = ip[0]
     ip = [
         i['netmask']
-        for i in ifaddresses("wlan0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     dirty_mask = ip [0]
 
     network = ipaddress.IPv4Network(dirty_ip+"/"+dirty_mask, strict=False)
     return network
 
-def scan_topology_live(ip):
-    """
-    The function `scan_topology` takes an IP address and a subnet mask as input, and scans the network
-    topology by pinging each possible IP address within the given subnet range and retrieving the
-    hostname for each reachable IP address.
-    
-    :param id_red: The parameter "id_red" represents the network ID or IP address of the network you
-    want to scan. It should be in the format "x.x.x.x" where each "x" represents a number between 0 and
-    255
-    :param mascara: The "mascara" parameter represents the subnet mask of the network. It is used to
-    determine the number of available IP addresses in the network
-    """
-    id_red = str(ip.network_address)
-    id_red_sep = id_red.split(".")
-    id_red_separado = [ int(x) for x in id_red_sep ]
-    possible_ip =  ip.num_addresses
+def scan_topology_premade(ip):
     topology = {}
-    for i in range(possible_ip-1):
-        
-        id_red_separado[3] += 1
-        
-        if id_red_separado[3] > 255:
-            id_red_separado[3] = 0
-            id_red_separado[2] += 1
-        
-        elif id_red_separado[2] > 255:
-            id_red_separado[1] += 1
-        
-        elif id_red_separado[1]> 255:
-            print("Error")
-            break
-        
-        new_ip = ".".join(str(element) for element in id_red_separado)
-        
-        if check_ping(new_ip):
-            try:
-                host_info = socket.gethostbyaddr(new_ip)
-                hostname = host_info[0]
-                topology[hostname] = new_ip
-            except socket.herror:
-                topology["Unknown host"] = new_ip
+    request = scapy.ARP() 
+  
+    request.pdst = str(ip)
+    broadcast = scapy.Ether() 
+  
+    broadcast.dst = 'ff:ff:ff:ff:ff:ff'
+  
+    request_broadcast = broadcast / request 
+    clients = scapy.srp(request_broadcast, timeout = 1)[0] 
+    for element in clients: 
+        #print(element[1].psrc + "      " + element[1].hwsrc)
+        topology[socket.getfqdn(element[1].psrc)] = ({
+                "IP":[element[1].psrc],
+                "MAC":[element[1].hwsrc],
+                "Subredes":[]
+        })
 
+    
     if bool(topology):
         j_topology = json.dumps(topology, indent=4)       
         return j_topology
 
-
 def scan_all():
     ip=get_ip()
-    return scan_topology_live(ip)
-
+    return scan_topology_premade(ip)
+    
+def scan_routes():
+    print("route")
+    
+print(scan_all())
