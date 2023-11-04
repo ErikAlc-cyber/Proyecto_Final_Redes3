@@ -3,49 +3,36 @@ import json
 import os
 import socket
 import time
-import socket
 import fcntl
 import struct
 import ipaddress
 import scapy.all as scapy 
+import re
 
-
-#TODO
-#No se si pueda hacer escacneo de router a router
-#El SSH funciona a rudas, puede que limita el uso a ssh preconfigurado con comandos predeterminados
-#no s si mi topologia sirva, de momento esta unicamente configurada con lo minimo en los routers, planeo implementar DHCP y routeo dinamico con rip
-#La API esta en pañales, de momento no se ni coom funciona flask, tendre que aprender sobre la marcha
-#Que mas queda? se debe de hacer ua presentacion en pttz- Eso deberia ser acil?
-
-def check_ping(ping_ip):
-    """
-    The function `check_ping` checks if a given IP address or hostname is reachable by sending a single
-    ping request and returning `True` if the response is successful (0) and `False` otherwise.
+def extract_network_info(config):
+    network_info = []
     
-    :param ping_ip: The `ping_ip` parameter is the IP address or hostname that you want to ping
-    :return: the status of the ping. If the ping is successful (response code 0), it returns True.
-    Otherwise, it returns False.
-    """
-    hostname = ping_ip
-    response = os.system("fping -c 1 " + hostname)
-    if response == 0:
-        pingstatus = True
-    else:
-        pingstatus = False
+    # Utiliza expresiones regulares para buscar direcciones IP y máscaras
+    ip_pattern = r'ip address (\d+\.\d+\.\d+\.\d+) (\d+\.\d+\.\d+\.\d+)'
     
-    return pingstatus
+    matches = re.findall(ip_pattern, config)
+    for match in matches:
+        ip, mask = match
+        network_info.append({'ip': ip, 'mask': mask})
+    
+    return network_info
 
 def get_ip():
     
     ip = [
         i['addr']
-        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in ifaddresses("wlan0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
-    
     dirty_ip = ip[0]
+    
     ip = [
         i['netmask']
-        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in ifaddresses("wlan0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     dirty_mask = ip [0]
 
@@ -64,23 +51,34 @@ def scan_topology_premade(ip):
     request_broadcast = broadcast / request 
     clients = scapy.srp(request_broadcast, timeout = 1)[0] 
     for element in clients: 
-        #print(element[1].psrc + "      " + element[1].hwsrc)
         topology[socket.getfqdn(element[1].psrc)] = ({
                 "IP":[element[1].psrc],
                 "MAC":[element[1].hwsrc],
-                "Subredes":[]
+                "Subredes":[str(ip)]
         })
 
     
     if bool(topology):
-        j_topology = json.dumps(topology, indent=4)       
-        return j_topology
+        #j_topology = json.dumps(topology, indent=4)
+        return topology
 
 def scan_all():
-    ip=get_ip()
-    return scan_topology_premade(ip)
     
-def scan_routes():
-    print("route")
+    topology = {}
+    networks = [get_ip(),'192.168.0.0/24','192.168.1.0/24','192.168.10.0/24','192.168.11.0/24','192.168.200.0/24']
     
+    for network_str in networks:
+        network = ipaddress.IPv4Network(network_str, strict=False)
+        topology[str(network)] = [
+            scan_topology_premade(network)
+        ]
+    
+    if bool(topology):
+        out_file = open("devices.json", "w")
+        j_topology = json.dump(topology, out_file, indent=4)
+        out_file.close()       
+    
+    # Ahora topology contiene los resultados de todas las redes y subredes
+    return topology
+
 print(scan_all())
