@@ -15,12 +15,13 @@ class ShellHandler:
         self.ssh.close()
 
     def clear_buffer(self,conexion):
-        max_buffer = 65535
+        max_buffer = 1000000000000000000000000000000000
         if conexion.recv_ready():
             return conexion.recv(max_buffer)
 
     def retrieve_config(self, comands, i):
-        max_buffer = 65535
+
+        max_buffer = 2**63 - 1
 
         new_conn = self.ssh.invoke_shell()
         salida = self.clear_buffer(new_conn)
@@ -30,13 +31,14 @@ class ShellHandler:
 
         with open(comands, 'r') as f:
             comandos = [line for line in f.readlines()]
-        
+
         with open(f"router_config-{i}.txt", "w") as t:
             for comando in comandos:
                 new_conn.send(comando)
                 time.sleep(2)
-                salida = new_conn.recv(max_buffer)
-                t.write(str(salida))
+                router_config = new_conn.recv(max_buffer)
+                print(f'{router_config}')
+                t.write(str(router_config))
 
     def exec_commands(self, comands):
         
