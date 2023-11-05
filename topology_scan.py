@@ -8,6 +8,7 @@ import struct
 import ipaddress
 import scapy.all as scapy 
 import re
+import ssher
 
 def extract_network_info(config):
     network_info = []
@@ -18,7 +19,7 @@ def extract_network_info(config):
     matches = re.findall(ip_pattern, config)
     for match in matches:
         ip, mask = match
-        network_info.append({'ip': ip, 'mask': mask})
+        network_info.append(f'{ip}/{mask}')
     
     return network_info
 
@@ -26,13 +27,13 @@ def get_ip():
     
     ip = [
         i['addr']
-        for i in ifaddresses("wlan0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     dirty_ip = ip[0]
     
     ip = [
         i['netmask']
-        for i in ifaddresses("wlan0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     dirty_mask = ip [0]
 
@@ -59,13 +60,25 @@ def scan_topology_premade(ip):
 
     
     if bool(topology):
-        #j_topology = json.dumps(topology, indent=4)
         return topology
 
+def get_networks(ip):
+    router_session=ssher.new_session(ip, "cisco", "root")
+    i = 1
+    router_session.retrieve_config("get_net.txt", i)
+
+    with open(f'router_config-{i}.txt', 'r') as file:
+        config_content = file.read()
+
+    network_info = extract_network_info(config_content)
+    return network_info
+
+
 def scan_all():
-    
+
     topology = {}
-    networks = [get_ip(),'192.168.0.0/24','192.168.1.0/24','192.168.10.0/24','192.168.11.0/24','192.168.200.0/24']
+    root_ip=get_ip()
+    networks = get_networks(str(root_ip.network_address + 1))
     
     for network_str in networks:
         network = ipaddress.IPv4Network(network_str, strict=False)

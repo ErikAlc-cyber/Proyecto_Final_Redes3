@@ -14,17 +14,37 @@ class ShellHandler:
     def __del__(self):
         self.ssh.close()
 
-    def retrieve_config(self):
-        stdin, stdout, stderr = self.ssh.exec_command("show running-config")
-        router_config = stdout.read().decode('utf-8')
+    def clear_buffer(self,conexion):
+        max_buffer = 65535
+        if conexion.recv_ready():
+            return conexion.recv(max_buffer)
 
-        # Guarda la configuración en un archivo
-        with open("router_config.txt", "w") as config_file:
-            config_file.write(router_config)
-    
+    def retrieve_config(self, comands, i):
+        max_buffer = 65535
+
+        new_conn = self.ssh.invoke_shell()
+        salida = self.clear_buffer(new_conn)
+        time.sleep(2)
+        new_conn.send("terminal length 0\n")
+        salida = self.clear_buffer(new_conn)
+
+        with open(comands, 'r') as f:
+            comandos = [line for line in f.readlines()]
+        
+        with open(f"router_config-{i}.txt", "w") as t:
+            for comando in comandos:
+                new_conn.send(comando)
+                time.sleep(2)
+                salida = new_conn.recv(max_buffer)
+                t.write(str(salida))
+
     def exec_commands(self, comands):
         
+        max_buffer = 65535
         new_conn = self.ssh.invoke_shell()
+        salida = self.clear_buffer(new_conn)
+        time.sleep(2)
+        new_conn.send("terminal length 0\n")
         
         with open(comands, 'r') as f:
             comandos = [line for line in f.readlines()]
@@ -32,7 +52,8 @@ class ShellHandler:
         for comando in comandos:
             new_conn.send(comando)
             time.sleep(2)
-            salida = nueva_conexion.recv(max_buffer)
-            
+            salida = new_conn.recv(max_buffer)
+
 def new_session(host, usr, password):
     ssh_sesion = ShellHandler(host, usr, password)
+    return ssh_sesion
