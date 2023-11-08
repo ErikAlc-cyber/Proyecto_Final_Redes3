@@ -3,12 +3,24 @@ import re
 import time
 import socket
 import json
+import ipaddress
 
 # Diccionario para almacenar la información de los dispositivos y sus conexiones
 topologia = {}
 
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
+    """
+    The function `obtener_info_dispositivo` connects to a device via SSH, sends commands to retrieve its
+    configuration, and stores the information in a dictionary.
+    
+    :param nombre: The name of the device you want to obtain information from
+    :param ip: The "ip" parameter is the IP address of the device you want to connect to
+    :param usuario: The parameter "usuario" refers to the username used to connect to the device via
+    SSH. It is the username that will be used to authenticate and establish the SSH connection
+    :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
+    connection to the device via SSH
+    """
     try:
         # Conéctate al dispositivo vía SSH
         ssh = paramiko.SSHClient()
@@ -65,6 +77,13 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
         print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
 
 def incrementar_direccion_ip(ip):
+    """
+    The function takes an IP address as input and increments the last part of the address by 1.
+    
+    :param ip: The parameter `ip` is a string representing an IP address in the format "x.x.x.x", where
+    each "x" represents a number between 0 and 255
+    :return: the IP address with the last part incremented by 1.
+    """
     partes_ip = ip.split('.')
     ultima_parte = int(partes_ip[-1])
     ultima_parte += 1
@@ -73,6 +92,19 @@ def incrementar_direccion_ip(ip):
 
 # Función para explorar la topología desde un router conocido
 def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=3):
+    """
+    The function `explorar_topologia` recursively explores a network topology starting from a given
+    router and IP address, retrieving information about each device and its connections.
+    
+    :param desde_router: The starting router from where the topology exploration begins
+    :param desde_ip: The starting IP address from where the topology exploration will begin
+    :param nivel: The "nivel" parameter represents the current level of depth in the topology
+    exploration. It starts at 0 and increases by 1 with each recursive call, defaults to 0 (optional)
+    :param max_nivel: The parameter "max_nivel" represents the maximum level of depth or hierarchy that
+    the function will explore in the topology. It determines how many levels of connections will be
+    traversed from the starting router, defaults to 3 (optional)
+    :return: nothing (None).
+    """
     if nivel > max_nivel:
         return
     obtener_info_dispositivo(desde_router, desde_ip, 'cisco', 'root')  # Reemplaza con tus credenciales
@@ -86,6 +118,11 @@ def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=3):
                 explorar_topologia(nuevo_router, incrementar_direccion_ip(nueva_ip), nivel + 1, max_nivel)
 
 def get_ip():
+    """
+    The function `get_ip` retrieves the IP address and netmask of the "tap0" interface and returns the
+    corresponding network.
+    :return: an IPv4 network object.
+    """
     
     ip = [
         i['addr']
@@ -104,6 +141,12 @@ def get_ip():
 
 
 def scan_all():
+    """
+    The function `scan_all` scans the network topology starting from a known router and saves the
+    results in a JSON file.
+    :return: the topology dictionary, which contains information about the network devices and their
+    connections.
+    """
     
     # Define el router inicial y su dirección IP (debes ajustarlo según tu red)
     router_inicial = 'real_world'
