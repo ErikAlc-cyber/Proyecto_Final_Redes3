@@ -1,6 +1,4 @@
-# Requisitos generales del proyecto final de Administración de
-
-## Servicios en Red (primera presentación).
+# Requisitos generales del proyecto final de Administración de Servicios en Red (primera presentación).
 ### Objetivo
 Desarrollar una API que ofrezca un conjunto de herramientas para la gestión de una red
 de cómputo mediante Python en una arquitectura de transferencia de estado
