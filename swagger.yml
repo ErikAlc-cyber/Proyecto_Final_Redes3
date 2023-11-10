@@ -4,10 +4,11 @@ openapi: 3.0.0
 info:
   title: "Flask REST API"
   description: "Una API para manejar redes"
-  version: "0.1.0"
+  version: "1.0.0"
 
 servers:
-  - url: "/api"
+  - url: "/"
+  description: REST API para governar redes en GNS3
 
 components:
   schemas:
@@ -24,6 +25,33 @@ components:
 paths:
   /usuarios:
     get:
+      operationId: "topology_scan.scan_all"
+      tags:
+        - "Usuarios"
+      summary: "Regresar json con todos los usuarios existentes en los routers, incluyendo nombre, permisos y dispositivos donde existe (URL a routers donde exista cada usuario)."
+      responses:
+        "200":
+          description: "Se encontro ususarios"
+    
+    post:
+      operationId: "topology_scan.scan_all"
+      tags:
+        - "Usuarios"
+      summary: "Regresar json con todos los usuarios existentes en los routers, incluyendo nombre, permisos y dispositivos donde existe (URL a routers donde exista cada usuario)."
+      responses:
+        "200":
+          description: "Se encontro ususarios"
+    
+    put:
+      operationId: "topology_scan.scan_all"
+      tags:
+        - "Usuarios"
+      summary: "Regresar json con todos los usuarios existentes en los routers, incluyendo nombre, permisos y dispositivos donde existe (URL a routers donde exista cada usuario)."
+      responses:
+        "200":
+          description: "Se encontro ususarios"
+    
+    delete:
       operationId: "topology_scan.scan_all"
       tags:
         - "Usuarios"

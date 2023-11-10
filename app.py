@@ -1,18 +1,24 @@
-from flask import render_template, Flask
 import connexion
+from flask import render_template
+from ma import ma
 
-app = Flask(__name__)
-app = connexion.App(__name__, specification_dir="./")
-app.add_api("swagger.yml")
+#Create the application instance
+connex_app = connexion.App(__name__, specification_dir='./')
+
+#read the swagger to configure the endpoints
+connex_app.add_api("swagger.yml")
+
+app = connex_app.app
 
 @app.route("/")
 def home():
-    return render_template("home.html")    
+    return render_template("home.html")
 
 if __name__ == "__main__":
     
     try:
-        app.run(host="0.0.0.0", port=8000)
+        ma.init_app(app)
+        app.run(port=8000, debug=True)
     
     except KeyboardInterrupt:
         app.destroy()

@@ -31,3 +31,7 @@ Implementar las siguientes funciones de la API-REST:
 |  CRUD usuarios por enrutador |  /routers/*hostname*/usuarios/  | Regresar json con los usuarios existentes en el router específico, incluyendo nombre y permisos  | Agregar un nuevo usuario al router específico, regresar json con la misma información de GET pero del usuario agregado  | Actualizar un nuevo usuario al router específico, regresar json con la misma información de GET pero del usuario actualizado.  | Eliminar usuario común a todos los routers, recuperar json con la misma información de GET pero del usuario eliminado.  |
 |  Detectar Topologia          |  /topologia                     | Regresar json con los routers existentes en la topología y ligas a sus routers vecinos  |  Activa un demonio que cada 5 minutos explora la red para detectar cambios en la misma | Permite cambiar el intervalo de tiempo en el que el demonio explora la topología.  | Detiene el demonio que explora la topologia.  |
 |  Grafica de Topologia        |  /topologia/grafica             | Regresa un archivo en algún formato gráfico donde se pueda visualizar la topología existente.  |  * | *  |  * |
+
+### Se uso de referencia para la API-Rest los siguientes tutoriales: 
+1. https://realpython.com/flask-connexion-rest-api/
+2. https://dassum.medium.com/python-rest-apis-with-flask-connexion-and-sqlalchemy-3c8c3292d9ce
