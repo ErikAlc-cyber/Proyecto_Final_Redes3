@@ -6,13 +6,12 @@ import json
 import ipaddress
 from ping3 import ping
 
-# Diccionario para almacenar la información de los dispositivos y sus conexiones
 topologia = {}
 
 def obtener_running_config(nombre, ip, usuario, contrasena):
     """
-    The function `obtener_info_dispositivo` connects to a device via SSH, sends commands to retrieve its
-    configuration, and stores the information in a dictionary.
+    The function `obtener_running_config` connects to a device via SSH, sends commands to retrieve its
+    configuration, returning it.
     
     :param nombre: The name of the device you want to obtain information from
     :param ip: The "ip" parameter is the IP address of the device you want to connect to
@@ -56,7 +55,7 @@ def obtener_running_config(nombre, ip, usuario, contrasena):
 
         # Almacena la información en el diccionario de topología
         ssh.close()
-        return configuracion
+        return json.dumps(configuracion, indent=4)
 
     except Exception as e:
         print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
@@ -64,8 +63,8 @@ def obtener_running_config(nombre, ip, usuario, contrasena):
 
 def obtener_usuarios(nombre, ip, usuario, contrasena):
     """
-    The function `obtener_info_dispositivo` connects to a device via SSH, sends commands to retrieve its
-    configuration, and stores the information in a dictionary.
+    The function `obtener_usuarios` connects to a device via SSH, sends commands to retrieve its
+    users, and stores the information in a dictionary.
     
     :param nombre: The name of the device you want to obtain information from
     :param ip: The "ip" parameter is the IP address of the device you want to connect to
@@ -74,6 +73,7 @@ def obtener_usuarios(nombre, ip, usuario, contrasena):
     :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
     connection to the device via SSH
     """
+    usuario = {}
     try:
         # Conéctate al dispositivo vía SSH
         ssh = paramiko.SSHClient()
@@ -120,7 +120,7 @@ def obtener_usuarios(nombre, ip, usuario, contrasena):
 
         # Almacena la información en el diccionario de topología
         ssh.close()
-        return usuarios
+        return json.dumps(usuarios,indent=4)
 
     except Exception as e:
         print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
@@ -176,10 +176,10 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
         time.sleep(3)
 
         # Almacena la información en el diccionario de topología
-        
+        i = 0
         for conn in conexiones:
             time.sleep(2)
-            topologia[nombre] = {
+            topologia[ip] = {
                 'ip': ip,
                 'conexiones': [ 
                     {
@@ -190,7 +190,9 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
             }
 
         ssh.close()
-
+        
+        return
+    
     except Exception as e:
         print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
 
@@ -198,8 +200,8 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
 # Función para obtener información de un dispositivo
 def obtener_interfaz(nombre, ip, usuario, contrasena):
     """
-    The function `obtener_info_dispositivo` connects to a device via SSH, sends commands to retrieve its
-    configuration, and stores the information in a dictionary.
+    The function `obtener_interfaz` connects to a device via SSH, sends commands to retrieve its
+    interface configuration, and stores the information in a dictionary.
     
     :param nombre: The name of the device you want to obtain information from
     :param ip: The "ip" parameter is the IP address of the device you want to connect to
@@ -208,6 +210,7 @@ def obtener_interfaz(nombre, ip, usuario, contrasena):
     :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
     connection to the device via SSH
     """
+    interface = {}
     try:
         # Conéctate al dispositivo vía SSH
         ssh = paramiko.SSHClient()
@@ -249,7 +252,7 @@ def obtener_interfaz(nombre, ip, usuario, contrasena):
         
         for conn in conexiones:
             time.sleep(2)
-            topologia[conn[0]] = {
+            interface[conn[0]] = {
                 'conexiones': [ 
                     {
                         'interfaz': conn[0],
@@ -260,9 +263,11 @@ def obtener_interfaz(nombre, ip, usuario, contrasena):
                 ]
             }
 
-        return json.dumps(topologia, indent=4)
-
         ssh.close()
+
+        if bool(interface):
+            j_topology = json.dumps(interface, indent=4)
+            return j_topology
 
     except Exception as e:
         print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
@@ -282,7 +287,7 @@ def incrementar_direccion_ip(ip):
     return '.'.join(partes_ip)
 
 # Función para explorar la topología desde un router conocido
-def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=3):
+def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=4):
     """
     The function `explorar_topologia` recursively explores a network topology starting from a given
     router and IP address, retrieving information about each device and its connections.
@@ -306,7 +311,7 @@ def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=3):
             if nuevo_router not in topologia:
                 explorar_topologia(nuevo_router, nueva_ip, nivel, max_nivel)
             else:
-                explorar_topologia(nuevo_router, incrementar_direccion_ip(nueva_ip), nivel + 1, max_nivel)
+                explorar_topologia(incrementar_direccion_ip(nuevo_router), incrementar_direccion_ip(nueva_ip), nivel + 1, max_nivel)
 
 def get_ip():
     """
@@ -340,7 +345,7 @@ def scan_all():
     """
     
     # Define el router inicial y su dirección IP (debes ajustarlo según tu red)
-    router_inicial = 'real_world'
+    router_inicial = '192.168.200.1'
     ip_router_inicial = '192.168.200.1'
 
     # Comienza a explorar la topología desde el router conocido
@@ -363,7 +368,7 @@ def scan_all():
         out_file = open("new-devices.json", "w")
         j_topology = json.dump(topology, out_file, indent=4)
         out_file.close()  
-    print("Completado!")
-    return topology
+    return json.dumps(topology, indent=4)
 
-print(obtener_interfaz("real_world", "192.168.200.1", 'cisco', 'root'))
+#print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
+print(scan_all())
