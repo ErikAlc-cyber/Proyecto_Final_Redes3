@@ -14,6 +14,8 @@ app = connex_app.app
 def home():
     return render_template("home.html")
 
+# The code block `if __name__ == "__main__":` is a common Python idiom that checks if the current
+# script is being run as the main module.
 if __name__ == "__main__":
     
     try:
