@@ -9,7 +9,23 @@ class usr_router:
         self.nombre = name
         self.permisos = permit
         self.dispositivo = device
-
+        
+    def traductor(self):
+        tru_permit = ""
+        
+        if self.permisos == 1:
+            tru_permit = "Read-Only"
+        elif self.permisos == 2:
+            tru_permit = "Read-Only and Ping"
+        elif self.permisos >= 14 :
+            tru_permit = "Permisos Personalizados"
+        elif self.permisos == 15:
+            tru_permit = "Todos los Permisos"
+        else:
+            tru_permit = ""
+        
+        self.permisos = tru_permit
+        
 def obtener_usuarios(nombre, ip, usuario, contrasena):
     """
     The function `obtener_usuarios` connects to a device via SSH, sends commands to retrieve its
