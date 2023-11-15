@@ -4,6 +4,8 @@ import time
 import socket
 import json
 import ipaddress
+import netifaces
+from socket import AF_INET
 from ping3 import ping
 
 topologia = {}
@@ -263,13 +265,13 @@ def get_ip():
     
     ip = [
         i['addr']
-        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in netifaces.ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     dirty_ip = ip[0]
     
     ip = [
         i['netmask']
-        for i in ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
+        for i in netifaces.ifaddresses("tap0").setdefault(AF_INET, [{"addr": "No IP addr"}])
     ]
     dirty_mask = ip [0]
 
@@ -317,5 +319,6 @@ def scan_all():
 
 
 #Debug Lines
+#print(get_ip())
 #print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
 print(scan_all())
