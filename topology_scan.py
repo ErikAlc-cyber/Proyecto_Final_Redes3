@@ -10,6 +10,21 @@ from ping3 import ping
 
 topologia = {}
 
+def es_direccion_broadcast(direccion_ip):
+    try:
+        # Convierte la cadena de la dirección IP en un objeto ipaddress.IPv4Address
+        ip = ipaddress.IPv4Address(direccion_ip)
+        
+        # Obtén la red a la que pertenece la dirección IP
+        red = ipaddress.IPv4Network(direccion_ip + '/32', strict=False)
+
+        # Comprueba si la dirección IP es la dirección de broadcast de la red
+        return ip == red.network_address + red.num_addresses - 1
+
+    except ValueError:
+        # Se captura un ValueError si la cadena de dirección IP no es válida
+        return False
+
 def obtener_running_config(nombre, ip, usuario, contrasena):
     """
     The function `obtener_running_config` connects to a device via SSH, sends commands to retrieve its
@@ -75,6 +90,10 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
     :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
     connection to the device via SSH
     """
+    #if es_direccion_broadcast(ip):
+        #print(f'La IP {ip} es la dirección de broadcast')
+        #return
+
     if ping(ip) == None:
         print(f'La ip {ip} no existe o no se puede alcanzar')  
         return
@@ -230,7 +249,7 @@ def incrementar_direccion_ip(ip):
     return '.'.join(partes_ip)
 
 # Función para explorar la topología desde un router conocido
-def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=4):
+def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=4, exploradas=set()):
     """
     The function `explorar_topologia` recursively explores a network topology starting from a given
     router and IP address, retrieving information about each device and its connections.
@@ -244,17 +263,20 @@ def explorar_topologia(desde_router, desde_ip, nivel=0, max_nivel=4):
     traversed from the starting router, defaults to 3 (optional)
     :return: nothing (None).
     """
-    if nivel > max_nivel:
+    if nivel > max_nivel or desde_ip in exploradas:
         return
+
     obtener_info_dispositivo(desde_router, desde_ip, 'cisco', 'root')  # Reemplaza con tus credenciales
+    exploradas.add(desde_ip)
+
     if desde_router in topologia:
         for conn in topologia[desde_router]['conexiones']:
             nuevo_router = conn['ip'].split()[0]
             nueva_ip = conn['ip'].split()[0]
             if nuevo_router not in topologia:
-                explorar_topologia(nuevo_router, nueva_ip, nivel, max_nivel)
+                explorar_topologia(nuevo_router, nueva_ip, nivel, max_nivel, exploradas)
             else:
-                explorar_topologia(incrementar_direccion_ip(nuevo_router), incrementar_direccion_ip(nueva_ip), nivel + 1, max_nivel)
+                explorar_topologia(incrementar_direccion_ip(nuevo_router), incrementar_direccion_ip(nueva_ip), nivel + 1, max_nivel, exploradas)
 
 def get_ip():
     """
@@ -322,3 +344,5 @@ def scan_all():
 #print(get_ip())
 #print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
 print(scan_all())
+#print(es_direccion_broadcast('192.168.200.1'))
+#print(es_direccion_broadcast('192.168.200.255'))
