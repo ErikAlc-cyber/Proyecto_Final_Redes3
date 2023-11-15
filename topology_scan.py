@@ -73,6 +73,10 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
     :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
     connection to the device via SSH
     """
+    if ping(ip) == None:
+        print(f'La ip {ip} no existe o no se puede alcanzar')  
+        return
+    
     try:
         # Conéctate al dispositivo vía SSH
         ssh = paramiko.SSHClient()
@@ -112,25 +116,26 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
         time.sleep(3)
 
         # Almacena la información en el diccionario de topología
-        i = 0
+        if ip not in topologia:
+            topologia[ip] = {'ip': ip, 'conexiones': []}
+
         for conn in conexiones:
-            time.sleep(2)
-            topologia[ip] = {
-                'ip': ip,
-                'conexiones': [ 
-                    {
-                        'interfaz': conn[0],
-                        'ip': conn[1]
-                    } 
-                ]
-            }
+            interfaz = conn[0]
+            direccion_ip = conn[1].split()[0]
+            mascara = conn[1].split()[1]
+
+            topologia[ip]['conexiones'].append({
+                'interfaz': interfaz,
+                'ip': direccion_ip,
+                'mascara': mascara
+            })
 
         ssh.close()
         
         return
     
     except Exception as e:
-        print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
+        print(f"No se pudo conectar a router:{nombre} en {ip}: {str(e)}")
 
 
 # Función para obtener información de un dispositivo
@@ -296,7 +301,10 @@ def scan_all():
                 "IP":[info['ip']],
                 "Subredes":[
                 {
-                    conn['interfaz']: conn['ip']
+                     conn['interfaz']: {
+                        'ip': conn['ip'],
+                        'mascara': conn['mascara']
+                    }
                 } for conn in info['conexiones']]
         })
 
@@ -307,5 +315,7 @@ def scan_all():
         return json.dumps(topology, indent=4)
     return None
 
+
+#Debug Lines
 #print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
-scan_all()
+print(scan_all())

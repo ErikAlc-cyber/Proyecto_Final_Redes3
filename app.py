@@ -7,7 +7,6 @@ connex_app = connexion.App(__name__, specification_dir='./')
 
 #read the swagger to configure the endpoints
 connex_app.add_api("swagger.yml")
-
 app = connex_app.app
 
 @app.route("/")
