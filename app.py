@@ -18,9 +18,5 @@ def home():
 # script is being run as the main module.
 if __name__ == "__main__":
     
-    try:
-        ma.init_app(app)
-        app.run(port=8000, debug=True)
-    
-    except KeyboardInterrupt:
-        app.destroy()
+    ma.init_app(app)
+    app.run(port=8000, debug=True)

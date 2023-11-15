@@ -108,6 +108,7 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
 
         # Analiza la configuración en busca de conexiones
         conexiones = re.findall(r'interface (\S+).*?ip address (\S+ \S+)', configuracion, re.DOTALL)
+        print(f'{ip}:{conexiones}')
         time.sleep(3)
 
         # Almacena la información en el diccionario de topología
@@ -307,4 +308,4 @@ def scan_all():
     return None
 
 #print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
-print(scan_all())
+scan_all()
