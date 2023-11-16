@@ -10,73 +10,6 @@ from ping3 import ping
 
 topologia = {}
 
-def es_direccion_broadcast(direccion_ip):
-    try:
-        # Convierte la cadena de la dirección IP en un objeto ipaddress.IPv4Address
-        ip = ipaddress.IPv4Address(direccion_ip)
-        
-        # Obtén la red a la que pertenece la dirección IP
-        red = ipaddress.IPv4Network(direccion_ip + '/32', strict=False)
-
-        # Comprueba si la dirección IP es la dirección de broadcast de la red
-        return ip == red.network_address + red.num_addresses - 1
-
-    except ValueError:
-        # Se captura un ValueError si la cadena de dirección IP no es válida
-        return False
-
-def obtener_running_config(nombre, ip, usuario, contrasena):
-    """
-    The function `obtener_running_config` connects to a device via SSH, sends commands to retrieve its
-    configuration, returning it.
-    
-    :param nombre: The name of the device you want to obtain information from
-    :param ip: The "ip" parameter is the IP address of the device you want to connect to
-    :param usuario: The parameter "usuario" refers to the username used to connect to the device via
-    SSH. It is the username that will be used to authenticate and establish the SSH connection
-    :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
-    connection to the device via SSH
-    """
-    try:
-        # Conéctate al dispositivo vía SSH
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip, username=usuario, password=contrasena)
-
-        # Abre un canal SSH
-        canal = ssh.invoke_shell()
-
-        # Envía comandos de inicio de sesión, si es necesario
-        #canal.send('usuario\n')
-        #canal.send('contrasena\n')
-
-        # Desactiva la paginación
-        canal.send('terminal length 0\n')
-
-        # Agrega comandos adicionales si es necesario
-        canal.send('enable\n')  # Ejemplo de comando 'enable' para privilegios ejecutivos
-        time.sleep(2)        
-        canal.send('root\n')  # Agrega comandos adicionales aquí
-        time.sleep(2)
-        # Espera un momento para que los comandos se ejecuten antes de obtener la salida
-        while not canal.recv_ready():
-            pass
-
-        # Envía el comando 'show running-config' y obtiene la salida
-        canal.send('show running-config\n')
-        while not canal.recv_ready():
-            pass
-        time.sleep(5)
-        configuracion = canal.recv(65535).decode('utf-8')
-        time.sleep(2)
-
-        # Almacena la información en el diccionario de topología
-        ssh.close()
-        return json.dumps(configuracion, indent=4)
-
-    except Exception as e:
-        print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
-
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
     """
@@ -298,7 +231,8 @@ def get_ip():
     dirty_mask = ip [0]
 
     network = ipaddress.IPv4Network(dirty_ip+"/"+dirty_mask, strict=False)
-    return network
+    
+    return network.network_address
 
 
 def scan_all():
@@ -309,9 +243,12 @@ def scan_all():
     connections.
     """
     
-    # Define el router inicial y su dirección IP (debes ajustarlo según tu red)
-    router_inicial = '192.168.200.1'
-    ip_router_inicial = '192.168.200.1'
+    # Define el router inicial y su dirección IP (Se hace en automatico)
+    red_inicial = str(get_ip())
+    primer_ip = incrementar_direccion_ip(red_inicial)
+    
+    router_inicial = primer_ip
+    ip_router_inicial = primer_ip
 
     # Comienza a explorar la topología desde el router conocido
     explorar_topologia(router_inicial, ip_router_inicial)
@@ -334,15 +271,18 @@ def scan_all():
 
     if bool(topology):
         out_file = open("new-devices.json", "w")
-        j_topology = json.dump(topology, out_file, indent=4)
+        j_topology = json.dumps(topology, indent=4)
+        out_file.write(j_topology)
         out_file.close()  
-        return json.dumps(topology, indent=4)
+        return j_topology
     return None
 
 
 #Debug Lines
+
 #print(get_ip())
-#print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
+#print(obtener_interfaz('192.168.200.1','192.168.200.1','cisco','root'))
+#print(obtener_informacion_router('192.168.200.1','cisco','root'))
 print(scan_all())
 #print(es_direccion_broadcast('192.168.200.1'))
 #print(es_direccion_broadcast('192.168.200.255'))
