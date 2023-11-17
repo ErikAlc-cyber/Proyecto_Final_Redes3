@@ -9,6 +9,7 @@ from socket import AF_INET
 from ping3 import ping
 
 topologia = {}
+router = {}
 
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
@@ -62,12 +63,43 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
             pass
         time.sleep(5)
         configuracion = canal.recv(65535).decode('utf-8')
-        time.sleep(2)
 
-        # Analiza la configuración en busca de conexiones
+        nombre = (re.search(r'hostname\s+(\S+)', configuracion))
+        nombre = nombre.group(1) if nombre else "Desconocido"
+        ip_administrativa = re.search(r'ip address (\d+\.\d+\.\d+\.\d+)', configuracion)
+        time.sleep(2)
+        ip_administrativa = ip_administrativa.group(1) if ip_administrativa else "Desconocido"
+        rol = re.search(r'role (\S+)', configuracion)
+        rol = rol.group(1) if rol else "Desconocido"
+        empresa = re.search(r'company (\S+)', configuracion)
+        empresa = empresa.group(1) if empresa else "Desconocido"
         conexiones = re.findall(r'interface (\S+).*?ip address (\S+ \S+)', configuracion, re.DOTALL)
-        print(f'{ip}:{conexiones}')
-        time.sleep(3)
+
+        canal.send("show version | include IOS\n")
+        while not canal.recv_ready():
+            pass
+        time.sleep(5)
+        configuracion = canal.recv(65535).decode('utf-8')
+        sistema_operativo = re.search(r'Software \((.*?)\)', configuracion, re.IGNORECASE)
+        sistema_operativo = sistema_operativo.group(0) if sistema_operativo else "Desconocido"
+
+        canal.send("show ip interface brief\n")
+        while not canal.recv_ready():
+            pass
+        time.sleep(5)
+        configuracion = canal.recv(65535).decode('utf-8')
+        ip_loopback = re.search(r'Loopback(\d+)\s+(\d+\.\d+\.\d+\.\d+)', configuracion)
+        ip_loopback = ip_loopback.group(1) if ip_loopback else "Desconocido"
+
+        router[ip] = {
+            "Nombre": str(nombre),
+            "IP Loopback": str(ip_loopback),
+            "IP Administrativa": str(ip_administrativa),
+            "Rol": str(rol),
+            "Empresa": str(empresa),
+            "Sistema Operativo": str(sistema_operativo),
+            "Interfaces Activas": []
+        }
 
         # Almacena la información en el diccionario de topología
         if ip not in topologia:
@@ -84,8 +116,13 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
                 'mascara': mascara
             })
 
+            router[ip]['Interfaces Activas'].append({
+                'interfaz': interfaz,
+                'ip': direccion_ip,
+                'mascara': mascara
+            })
+
         ssh.close()
-        
         return
     
     except Exception as e:
@@ -270,11 +307,21 @@ def scan_all():
         })
 
     if bool(topology):
+
+        #Info gral. topologia
         out_file = open("new-devices.json", "w")
         j_topology = json.dumps(topology, indent=4)
         out_file.write(j_topology)
         out_file.close()  
+        
+        #Info especifica por router
+        out_file = open("routers_info.json", "w")
+        routers_info = json.dumps(router, indent=4)
+        out_file.write(routers_info)
+        out_file.close()
+
         return j_topology
+    
     return None
 
 

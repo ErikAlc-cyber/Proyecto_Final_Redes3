@@ -1,0 +1,507 @@
+{
+    "192.168.200.1": {
+        "Nombre": "real_world",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "192.168.200.1",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "192.168.200.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "20.20.30.1",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "20.20.30.1": {
+        "Nombre": "real_world",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "192.168.200.1",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "192.168.200.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "20.20.30.1",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "20.20.30.2": {
+        "Nombre": "r2",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "20.20.30.2",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "20.20.30.2",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.1",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.5",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.1": {
+        "Nombre": "r2",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "20.20.30.2",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "20.20.30.2",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.1",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.5",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.2": {
+        "Nombre": "r3",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.2",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.2",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.9",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.17",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.9": {
+        "Nombre": "r3",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.2",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.2",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.9",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.17",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.10": {
+        "Nombre": "r1",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.10",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.10",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.0.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.1.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.22",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "192.168.0.1": {
+        "Nombre": "r1",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.10",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.10",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.0.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.1.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.22",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "192.168.1.1": {
+        "Nombre": "r1",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.10",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.10",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.0.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.1.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.22",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.22": {
+        "Nombre": "r1",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.10",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.10",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.0.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.1.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.22",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.17": {
+        "Nombre": "r3",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.2",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.2",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.9",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.17",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.18": {
+        "Nombre": "r7",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.14",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.14",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.10.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.11.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.18",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.14": {
+        "Nombre": "r7",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.14",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.14",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.10.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.11.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.18",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "192.168.10.1": {
+        "Nombre": "r7",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.14",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.14",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.10.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.11.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.18",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "192.168.11.1": {
+        "Nombre": "r7",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.14",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.14",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "192.168.10.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "192.168.11.1",
+                "mascara": "255.255.255.0"
+            },
+            {
+                "interfaz": "FastEthernet2/0",
+                "ip": "102.20.20.18",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.5": {
+        "Nombre": "r2",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "20.20.30.2",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "20.20.30.2",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.1",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.5",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.6": {
+        "Nombre": "r4",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.6",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.6",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.13",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.21",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.13": {
+        "Nombre": "r4",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.6",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.6",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.13",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.21",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    },
+    "102.20.20.21": {
+        "Nombre": "r4",
+        "IP Loopback": "Desconocido",
+        "IP Administrativa": "102.20.20.6",
+        "Rol": "Desconocido",
+        "Empresa": "Desconocido",
+        "Sistema Operativo": "Software (C7200-A3JK9S-M)",
+        "Interfaces Activas": [
+            {
+                "interfaz": "FastEthernet0/0",
+                "ip": "102.20.20.6",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/0",
+                "ip": "102.20.20.13",
+                "mascara": "255.255.255.252"
+            },
+            {
+                "interfaz": "FastEthernet1/1",
+                "ip": "102.20.20.21",
+                "mascara": "255.255.255.252"
+            }
+        ]
+    }
+}
