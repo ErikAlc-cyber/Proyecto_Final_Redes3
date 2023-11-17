@@ -9,87 +9,49 @@ from socket import AF_INET
 from ping3 import ping
 
 topologia = {}
+router = {} 
 
-def es_direccion_broadcast(direccion_ip):
-    try:
-        # Convierte la cadena de la dirección IP en un objeto ipaddress.IPv4Address
-        ip = ipaddress.IPv4Address(direccion_ip)
-        
-        # Obtén la red a la que pertenece la dirección IP
-        red = ipaddress.IPv4Network(direccion_ip + '/32', strict=False)
-
-        # Comprueba si la dirección IP es la dirección de broadcast de la red
-        return ip == red.network_address + red.num_addresses - 1
-
-    except ValueError:
-        # Se captura un ValueError si la cadena de dirección IP no es válida
-        return False
-
-def obtener_running_config(nombre, ip, usuario, contrasena):
+def obtener_router(Ip=None,name=None):
     """
-    The function `obtener_running_config` connects to a device via SSH, sends commands to retrieve its
-    configuration, returning it.
+    The function `obtener_router` retrieves information about a router from a JSON file based on either
+    its IP address or name.
     
-    :param nombre: The name of the device you want to obtain information from
-    :param ip: The "ip" parameter is the IP address of the device you want to connect to
-    :param usuario: The parameter "usuario" refers to the username used to connect to the device via
-    SSH. It is the username that will be used to authenticate and establish the SSH connection
-    :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
-    connection to the device via SSH
+    :param Ip: The `Ip` parameter is used to specify the IP address of a router. If this parameter is
+    provided, the function will return the information of the router with the specified IP address from
+    the `routers_info.json` file
+    :param name: The "name" parameter is used to specify the name of the router you want to obtain
+    information for
+    :return: the router information from the 'routers_info.json' file. If either the 'Ip' or 'name'
+    parameter is provided, it will return the information for that specific router. If neither parameter
+    is provided, it will return the information for all routers.
     """
-    try:
-        # Conéctate al dispositivo vía SSH
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip, username=usuario, password=contrasena)
+    with open('routers_info.json') as archivo:
+        datos = json.load(archivo)
 
-        # Abre un canal SSH
-        canal = ssh.invoke_shell()
-
-        # Envía comandos de inicio de sesión, si es necesario
-        #canal.send('usuario\n')
-        #canal.send('contrasena\n')
-
-        # Desactiva la paginación
-        canal.send('terminal length 0\n')
-
-        # Agrega comandos adicionales si es necesario
-        canal.send('enable\n')  # Ejemplo de comando 'enable' para privilegios ejecutivos
-        time.sleep(2)        
-        canal.send('root\n')  # Agrega comandos adicionales aquí
-        time.sleep(2)
-        # Espera un momento para que los comandos se ejecuten antes de obtener la salida
-        while not canal.recv_ready():
-            pass
-
-        # Envía el comando 'show running-config' y obtiene la salida
-        canal.send('show running-config\n')
-        while not canal.recv_ready():
-            pass
-        time.sleep(5)
-        configuracion = canal.recv(65535).decode('utf-8')
-        time.sleep(2)
-
-        # Almacena la información en el diccionario de topología
-        ssh.close()
-        return json.dumps(configuracion, indent=4)
-
-    except Exception as e:
-        print(f"No se pudo conectar a {nombre} en {ip}: {str(e)}")
+        if Ip != None:
+            router=datos[Ip]
+        elif name != None:
+            router=datos[name]
+        else:
+            return datos
+        
+        return router
 
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
     """
-    The function `obtener_info_dispositivo` connects to a device via SSH, sends commands to retrieve its
-    configuration, and stores the information in a dictionary.
+    The function `obtener_info_dispositivo` connects to a network device using SSH, retrieves its
+    configuration information, and stores it in a dictionary.
     
-    :param nombre: The name of the device you want to obtain information from
+    :param nombre: The name of the device you want to connect to
     :param ip: The "ip" parameter is the IP address of the device you want to connect to
-    :param usuario: The parameter "usuario" refers to the username used to connect to the device via
-    SSH. It is the username that will be used to authenticate and establish the SSH connection
+    :param usuario: The parameter "usuario" is the username used to authenticate and connect to the
+    device via SSH. It is typically a string value
     :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
-    connection to the device via SSH
+    SSH connection with the device
+    :return: nothing.
     """
+
     #if es_direccion_broadcast(ip):
         #print(f'La IP {ip} es la dirección de broadcast')
         #return
@@ -129,12 +91,43 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
             pass
         time.sleep(5)
         configuracion = canal.recv(65535).decode('utf-8')
-        time.sleep(2)
 
-        # Analiza la configuración en busca de conexiones
+        nombre = (re.search(r'hostname\s+(\S+)', configuracion))
+        nombre = nombre.group(1) if nombre else "Desconocido"
+        ip_administrativa = re.search(r'ip address (\d+\.\d+\.\d+\.\d+)', configuracion)
+        time.sleep(2)
+        ip_administrativa = ip_administrativa.group(1) if ip_administrativa else "Desconocido"
+        rol = re.search(r'role (\S+)', configuracion)
+        rol = rol.group(1) if rol else "Desconocido"
+        empresa = re.search(r'company (\S+)', configuracion)
+        empresa = empresa.group(1) if empresa else "Desconocido"
         conexiones = re.findall(r'interface (\S+).*?ip address (\S+ \S+)', configuracion, re.DOTALL)
-        print(f'{ip}:{conexiones}')
-        time.sleep(3)
+
+        canal.send("show version | include IOS\n")
+        while not canal.recv_ready():
+            pass
+        time.sleep(5)
+        configuracion = canal.recv(65535).decode('utf-8')
+        sistema_operativo = re.search(r'Software \((.*?)\)', configuracion, re.IGNORECASE)
+        sistema_operativo = sistema_operativo.group(0) if sistema_operativo else "Desconocido"
+
+        canal.send("show ip interface brief\n")
+        while not canal.recv_ready():
+            pass
+        time.sleep(5)
+        configuracion = canal.recv(65535).decode('utf-8')
+        ip_loopback = re.search(r'Loopback(\d+)\s+(\d+\.\d+\.\d+\.\d+)', configuracion)
+        ip_loopback = ip_loopback.group(1) if ip_loopback else "Desconocido"
+
+        router[ip] = {
+            "Nombre": str(nombre),
+            "IP Loopback": str(ip_loopback),
+            "IP Administrativa": str(ip_administrativa),
+            "Rol": str(rol),
+            "Empresa": str(empresa),
+            "Sistema Operativo": str(sistema_operativo),
+            "Interfaces Activas": []
+        }
 
         # Almacena la información en el diccionario de topología
         if ip not in topologia:
@@ -148,11 +141,17 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
             topologia[ip]['conexiones'].append({
                 'interfaz': interfaz,
                 'ip': direccion_ip,
+                'mascara': mascara,
+                'Liga': f'/routes/{ip}/{interfaz}'
+            })
+
+            router[ip]['Interfaces Activas'].append({
+                'interfaz': interfaz,
+                'ip': direccion_ip,
                 'mascara': mascara
             })
 
         ssh.close()
-        
         return
     
     except Exception as e:
@@ -298,7 +297,8 @@ def get_ip():
     dirty_mask = ip [0]
 
     network = ipaddress.IPv4Network(dirty_ip+"/"+dirty_mask, strict=False)
-    return network
+    
+    return network.network_address
 
 
 def scan_all():
@@ -309,9 +309,12 @@ def scan_all():
     connections.
     """
     
-    # Define el router inicial y su dirección IP (debes ajustarlo según tu red)
-    router_inicial = '192.168.200.1'
-    ip_router_inicial = '192.168.200.1'
+    # Define el router inicial y su dirección IP (Se hace en automatico)
+    red_inicial = str(get_ip())
+    primer_ip = incrementar_direccion_ip(red_inicial)
+    
+    router_inicial = primer_ip
+    ip_router_inicial = primer_ip
 
     # Comienza a explorar la topología desde el router conocido
     explorar_topologia(router_inicial, ip_router_inicial)
@@ -333,16 +336,29 @@ def scan_all():
         })
 
     if bool(topology):
+
+        #Info gral. topologia
         out_file = open("new-devices.json", "w")
-        j_topology = json.dump(topology, out_file, indent=4)
+        j_topology = json.dumps(topology, indent=4)
+        out_file.write(j_topology)
         out_file.close()  
-        return json.dumps(topology, indent=4)
+        
+        #Info especifica por router
+        out_file = open("routers_info.json", "w")
+        routers_info = json.dumps(router, indent=4)
+        out_file.write(routers_info)
+        out_file.close()
+
+        return j_topology
+    
     return None
 
 
 #Debug Lines
+
 #print(get_ip())
-#print(obtener_interfaz('real_world','192.168.200.1','cisco','root'))
-print(scan_all())
+#print(obtener_interfaz('192.168.200.1','192.168.200.1','cisco','root'))
+#print(obtener_informacion_router('192.168.200.1','cisco','root'))
+#print(scan_all())
 #print(es_direccion_broadcast('192.168.200.1'))
 #print(es_direccion_broadcast('192.168.200.255'))
