@@ -9,7 +9,20 @@ from socket import AF_INET
 from ping3 import ping
 
 topologia = {}
-router = {}
+router = {} 
+
+def obtener_router(Ip=None,name=None):
+    with open('routers_info.json') as archivo:
+        datos = json.load(archivo)
+
+        if Ip != None:
+            router=datos[Ip]
+        elif name != None:
+            router=datos[name]
+        else:
+            return datos
+        
+        return router
 
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
@@ -113,7 +126,8 @@ def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
             topologia[ip]['conexiones'].append({
                 'interfaz': interfaz,
                 'ip': direccion_ip,
-                'mascara': mascara
+                'mascara': mascara,
+                'Liga': f'/routes/{ip}/{interfaz}'
             })
 
             router[ip]['Interfaces Activas'].append({
