@@ -24,6 +24,9 @@ class App():
     def change_interval(self, number):
         self.interval = number
 
+    def stop_daemon(self):
+        self.shutdown_flag = True
+
     def run(self):
         logs = {}
         logger = self.logger

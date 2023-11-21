@@ -6,7 +6,7 @@ import networkx as nx
 import paramiko
 import time
 import io
-
+import topology_scan
 
 app = Flask(__name__)
 
@@ -686,6 +686,14 @@ def grafico_red():
     # Enviar la imagen como respuesta
     return send_file(img_buffer, mimetype='image/png')
         
-    
+@app.route('/routes')
+def obtener_router(ip):
+    topology_scan.obtener_interfaz()
+
+@app.route('/routes/<ip>')
+def obtener_router_especifico(ip):
+    topology_scan.obtener_interfaz(ip)
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=8081)
