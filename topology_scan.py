@@ -33,9 +33,9 @@ def obtener_router(Ip=None,name=None):
         elif name != None:
             router=datos[name]
         else:
-            return json.dumps(datos, indent=4)
+            return json.dumps(datos)
         
-        return json.dumps(router, indent=4)
+        return json.dumps(router)
 
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
@@ -227,7 +227,7 @@ def obtener_interfaz(nombre, ip, usuario, contrasena):
         ssh.close()
 
         if bool(interface):
-            j_topology = json.dumps(interface, indent=4)
+            j_topology = json.dumps(interface)
             return j_topology
 
     except Exception as e:
@@ -339,13 +339,13 @@ def scan_all():
 
         #Info gral. topologia
         out_file = open("new-devices.json", "w")
-        j_topology = json.dumps(topology, indent=4)
+        j_topology = json.dumps(topology)
         out_file.write(j_topology)
         out_file.close()  
         
         #Info especifica por router
         out_file = open("routers_info.json", "w")
-        routers_info = json.dumps(router, indent=4)
+        routers_info = json.dumps(router)
         out_file.write(routers_info)
         out_file.close()
 
