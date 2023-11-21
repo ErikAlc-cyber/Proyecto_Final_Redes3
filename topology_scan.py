@@ -344,6 +344,6 @@ def scan_all():
 #print(get_ip())
 #print(obtener_interfaz('192.168.200.1','192.168.200.1','cisco','root'))
 #print(obtener_informacion_router('192.168.200.1','cisco','root'))
-#print(scan_all())
+print(scan_all())
 #print(es_direccion_broadcast('192.168.200.1'))
 #print(es_direccion_broadcast('192.168.200.255'))
