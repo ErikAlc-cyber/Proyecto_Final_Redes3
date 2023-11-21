@@ -12,6 +12,19 @@ topologia = {}
 router = {} 
 
 def obtener_router(Ip=None,name=None):
+    """
+    The function `obtener_router` retrieves information about a router from a JSON file based on either
+    its IP address or name.
+    
+    :param Ip: The `Ip` parameter is used to specify the IP address of a router. If this parameter is
+    provided, the function will return the information of the router with the specified IP address from
+    the `routers_info.json` file
+    :param name: The "name" parameter is used to specify the name of the router you want to obtain
+    information for
+    :return: the router information from the 'routers_info.json' file. If either the 'Ip' or 'name'
+    parameter is provided, it will return the information for that specific router. If neither parameter
+    is provided, it will return the information for all routers.
+    """
     with open('routers_info.json') as archivo:
         datos = json.load(archivo)
 
@@ -27,16 +40,18 @@ def obtener_router(Ip=None,name=None):
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
     """
-    The function `obtener_info_dispositivo` connects to a device via SSH, sends commands to retrieve its
-    configuration, and stores the information in a dictionary.
+    The function `obtener_info_dispositivo` connects to a network device using SSH, retrieves its
+    configuration information, and stores it in a dictionary.
     
-    :param nombre: The name of the device you want to obtain information from
+    :param nombre: The name of the device you want to connect to
     :param ip: The "ip" parameter is the IP address of the device you want to connect to
-    :param usuario: The parameter "usuario" refers to the username used to connect to the device via
-    SSH. It is the username that will be used to authenticate and establish the SSH connection
+    :param usuario: The parameter "usuario" is the username used to authenticate and connect to the
+    device via SSH. It is typically a string value
     :param contrasena: The parameter "contrasena" is the password used to authenticate and establish a
-    connection to the device via SSH
+    SSH connection with the device
+    :return: nothing.
     """
+
     #if es_direccion_broadcast(ip):
         #print(f'La IP {ip} es la dirección de broadcast')
         #return
@@ -337,13 +352,3 @@ def scan_all():
         return j_topology
     
     return None
-
-
-#Debug Lines
-
-#print(get_ip())
-#print(obtener_interfaz('192.168.200.1','192.168.200.1','cisco','root'))
-#print(obtener_informacion_router('192.168.200.1','cisco','root'))
-print(scan_all())
-#print(es_direccion_broadcast('192.168.200.1'))
-#print(es_direccion_broadcast('192.168.200.255'))
