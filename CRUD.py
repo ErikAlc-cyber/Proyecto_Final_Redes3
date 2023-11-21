@@ -687,12 +687,14 @@ def grafico_red():
     return send_file(img_buffer, mimetype='image/png')
         
 @app.route('/routes')
-def obtener_router(ip):
-    topology_scan.obtener_interfaz()
+def obtener_router():
+    router = topology_scan.obtener_router()
+    return jsonify(router)
 
 @app.route('/routes/<ip>')
 def obtener_router_especifico(ip):
-    topology_scan.obtener_interfaz(ip)
+    router = topology_scan.obtener_router(Ip=ip)
+    return jsonify(router)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8081)

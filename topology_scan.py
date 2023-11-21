@@ -33,9 +33,9 @@ def obtener_router(Ip=None,name=None):
         elif name != None:
             router=datos[name]
         else:
-            return datos
+            return json.dumps(datos, indent=4)
         
-        return router
+        return json.dumps(router, indent=4)
 
 # Función para obtener información de un dispositivo
 def obtener_info_dispositivo(nombre, ip, usuario, contrasena):
@@ -352,3 +352,5 @@ def scan_all():
         return j_topology
     
     return None
+
+print(type(obtener_router()))
