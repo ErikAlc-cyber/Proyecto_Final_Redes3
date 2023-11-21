@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import paramiko
 import time
+import topology_scan
 
 app = Flask(__name__)
 
@@ -15,7 +16,27 @@ routers = {
 }
 usuario = "cisco"
 contrasena = "root"
-    
+
+# Ruta para escanear toda la topologia
+@app.route('/topologia', methods=['GET'])
+def topologia():
+    topology_scan.scan_all()
+
+# Ruta para obtener info de los routers
+@app.route('/routes', methods=['GET'])
+def router():
+    topology_scan.obtener_router()
+
+# Ruta para obtener la info de un router específico
+@app.route('/routes/<ip>', methods=['GET'])
+def router_espe(ip):
+    topology_scan.obtener_router(Ip=ip)
+
+# Ruta para obtener la info de una interfaz de un router específico
+@app.route('/routes/<ip>/interface', methods=['GET'])
+def interfaz(ip):
+    topology_scan.obtener_interfaz(ip,ip,usuario,contrasena)
+
 # Función para conectar y enviar comandos a un router
 def conectar_y_enviar_comandos(ip, usuario, contrasena):
     try:
