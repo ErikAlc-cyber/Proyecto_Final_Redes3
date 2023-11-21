@@ -7,7 +7,7 @@ import psutil
 from daemonize import Daemonize
 
 class App():
-    def __init__(self):
+    def __init__(self, interval=1):
         logger = logging.getLogger('syslog_parser')
         logger.setLevel(logging.INFO)
 
@@ -16,7 +16,7 @@ class App():
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
-        self.interval = 1
+        self.interval = interval
         self.shutdown_flag = False
 
         self.logger = logger

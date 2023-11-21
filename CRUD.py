@@ -569,6 +569,9 @@ def explorar_red():
 
 @app.route('/topologia')
 def topologia_red():
+    # Por ssh:
+    #topology_scan.scan_all()
+
     # Definir la URL de la API de GNS3 (ajusta según sea necesario)
     url_nodos = "http://localhost:3080/v2/projects/4620dc5a-e9fb-4199-baca-ace12e46bf97/nodes"
     url_enlaces = "http://localhost:3080/v2/projects/4620dc5a-e9fb-4199-baca-ace12e46bf97/links"
@@ -637,9 +640,6 @@ def detener_demonio():
     else:
         return jsonify({"mensaje": "El demonio ya estaba detenido"})
 
-if __name__ == '__main__':
-    app.run(debug=True, port=8081)
-
 
 @app.route('/topologia/grafica')
 def grafico_red():
@@ -693,7 +693,6 @@ def obtener_router(ip):
 @app.route('/routes/<ip>')
 def obtener_router_especifico(ip):
     topology_scan.obtener_interfaz(ip)
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=8081)
